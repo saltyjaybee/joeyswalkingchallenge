@@ -1,10 +1,12 @@
 const sheetId = '1rl8YOQ8Ez6qsGIdkYbvZwRWqFcfGEbAa3KRKoZWaOKo';
 const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
+let joeysMarker;
+
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
     zoom: 6,
-    center: joeysMarker.getPosition(),
+    center: { lat: -19.2535, lng: 146.81724 },
   });
 
   const startMarker = new google.maps.Marker({
@@ -13,7 +15,7 @@ function initMap() {
     title: "St Joseph's Catholic School the Strand",
   });
 
-  const joeysMarker = new google.maps.Marker({
+  joeysMarker = new google.maps.Marker({
     position: { lat: -19.2535, lng: 146.81724 },
     map: map,
     title: 'Joeys 150th Walkers',
@@ -90,25 +92,9 @@ function initMap() {
         path.forEach((point) => bounds.extend(point));
         map.fitBounds(bounds);
       }
-    );
-  }
-
-  function watchForChanges() {
-    $.getJSON(
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Trigger!A1?key=${apiKey}`,
-      (data) => {
-        const timestamp = new Date(data.values[0][0]);
-        if (timestamp > lastUpdated) {
-          lastUpdated = timestamp;
-          updateMarkerPosition();
-        }
-        setTimeout(watchForChanges, 5000);
-      }
-    );
-  }
-
-  let lastUpdated = new Date();
-  watchForChanges();
+    });
 }
 
-initMap();
+ 
+
+ 
