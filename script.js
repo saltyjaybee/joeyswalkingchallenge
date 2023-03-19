@@ -93,7 +93,22 @@ function initMap() {
   );
 }
 
-  setInterval(updateMarkerPosition, 60000);
+function watchForChanges() {
+  $.getJSON(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Trigger!A1?key=${apiKey}`,
+    (data) => {
+      const timestamp = new Date(data.values[0][0]);
+      if (timestamp > lastUpdated) {
+        lastUpdated = timestamp;
+        updateMarkerPosition();
+      }
+      setTimeout(watchForChanges, 5000);
+    }
+  );
+}
+
+let lastUpdated = new Date();
+watchForChanges();
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
