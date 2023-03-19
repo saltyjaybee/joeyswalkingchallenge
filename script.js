@@ -2,11 +2,10 @@ const sheetId = '1rl8YOQ8Ez6qsGIdkYbvZwRWqFcfGEbAa3KRKoZWaOKo';
 const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
 function initMap() {
-  google.maps.event.addDomListener(window, 'load', () => {
-    const map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 5,
-      center: { lat: -27.464145, lng: 141.278832 },
-    });
+  const map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 5,
+    center: { lat: -27.464145, lng: 141.278832 },
+  });
 
   const startMarker = new google.maps.Marker({
     position: { lat: -19.2535, lng: 146.81724 },
@@ -59,58 +58,56 @@ function initMap() {
     }
   );
 
- function updateMarkerPosition() {
-  $.getJSON(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:C?key=${apiKey}`,
-    (data) => {
-      const totalKms = data.values
-		.map((row) => parseFloat(row[2])) // use column C for kms walked
-		.reduce((sum, kms) => sum + kms, 0);
+  function updateMarkerPosition() {
+    $.getJSON(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:C?key=${apiKey}`,
+      (data) => {
+        const totalKms = data.values
+          .map((row) => parseFloat(row[2])) // use column C for kms walked
+          .reduce((sum, kms) => sum + kms, 0);
 
+        const route = directionsRenderer.getDirections();
+        const path = route.routes[0].overview_path;
+        let remainingKms = totalKms;
 
-      const route = directionsRenderer.getDirections();
-      const path = route.routes[0].overview_path;
-      let remainingKms = totalKms;
-
-      for (let i = 0; i < path.length - 1; i++) {
-        const a = path[i];
-        const b = path[i + 1];
-        const distance = google.maps.geometry.spherical.computeDistanceBetween(a, b) / 1000;
-        if (remainingKms >= distance) {
-          remainingKms -= distance;
-        } else {
-          const fraction = remainingKms / distance;
-          const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
-          joeysMarker.setPosition(interpolatedLatLng);
-          break;
+        for (let i = 0; i < path.length - 1; i++) {
+          const a = path[i];
+          const b = path[i + 1];
+          const distance = google.maps.geometry.spherical.computeDistanceBetween(a, b) / 1000;
+          if (remainingKms >= distance) {
+            remainingKms -= distance;
+          } else {
+            const fraction = remainingKms / distance;
+            const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
+            joeysMarker.setPosition(interpolatedLatLng);
+            break;
+          }
         }
+
+        // Zoom to the route
+        const bounds = new google.maps.LatLngBounds();
+        path.forEach((point) => bounds.extend(point));
+        map.fitBounds(bounds);
       }
+    );
+  }
 
-      // Zoom to the route
-      const bounds = new google.maps.LatLngBounds();
-      path.forEach((point) => bounds.extend(point));
-      map.fitBounds(bounds);
-    }
-  );
-}
-
-function watchForChanges() {
-  $.getJSON(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Trigger!A1?key=${apiKey}`,
-    (data) => {
-      const timestamp = new Date(data.values[0][0]);
-      if (timestamp > lastUpdated) {
-        lastUpdated = timestamp;
-        updateMarkerPosition();
+  function watchForChanges() {
+    $.getJSON(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Trigger!A1?key=${apiKey}`,
+      (data) => {
+        const timestamp = new Date(data.values[0][0]);
+        if (timestamp > lastUpdated) {
+          lastUpdated = timestamp;
+          updateMarkerPosition();
+        }
+        setTimeout(watchForChanges, 5000);
       }
-      setTimeout(watchForChanges, 5000);
-    }
-  );
-}
+    );
+  }
 
-let lastUpdated = new Date();
-    watchForChanges();
-  });
+  let lastUpdated = new Date();
+  watchForChanges();
 }
 
 initMap();
