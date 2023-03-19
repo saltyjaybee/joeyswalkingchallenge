@@ -81,7 +81,7 @@ function initMap() {
     );
   }
 
-  setInterval(updateMarkerPosition, 60000);
+  setInterval(updateMarkerPosition, 60000); // Update the position every minute
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
