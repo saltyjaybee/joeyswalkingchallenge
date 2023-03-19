@@ -1,5 +1,5 @@
 const sheetId = '1rl8YOQ8Ez6qsGIdkYbvZwRWqFcfGEbAa3KRKoZWaOKo';
-const apiKey = 'AIzaSyB3Ds_1eQhLO7NRgj7E1d5R7hssrW3K2Ow';
+const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
