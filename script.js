@@ -58,34 +58,39 @@ function initMap() {
     }
   );
 
-  function updateMarkerPosition() {
-    $.getJSON(
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:B?key=${apiKey}`,
-      (data) => {
-        const totalKms = data.values
-          .map((row) => parseFloat(row[1]))
-          .reduce((sum, kms) => sum + kms, 0);
+ function updateMarkerPosition() {
+  $.getJSON(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:B?key=${apiKey}`,
+    (data) => {
+      const totalKms = data.values
+        .map((row) => parseFloat(row[1]))
+        .reduce((sum, kms) => sum + kms, 0);
 
-        const route = directionsRenderer.getDirections();
-        const path = route.routes[0].overview_path;
-        let remainingKms = totalKms;
+      const route = directionsRenderer.getDirections();
+      const path = route.routes[0].overview_path;
+      let remainingKms = totalKms;
 
-        for (let i = 0; i < path.length - 1; i++) {
-          const a = path[i];
-          const b = path[i + 1];
-          const distance = google.maps.geometry.spherical.computeDistanceBetween(a, b) / 1000;
-          if (remainingKms >= distance) {
-            remainingKms -= distance;
-          } else {
-            const fraction = remainingKms / distance;
-            const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
-            joeysMarker.setPosition(interpolatedLatLng);
-            break;
-          }
+      for (let i = 0; i < path.length - 1; i++) {
+        const a = path[i];
+        const b = path[i + 1];
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(a, b) / 1000;
+        if (remainingKms >= distance) {
+          remainingKms -= distance;
+        } else {
+          const fraction = remainingKms / distance;
+          const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
+          joeysMarker.setPosition(interpolatedLatLng);
+          break;
         }
       }
-    );
-  }
+
+      // Zoom to the route
+      const bounds = new google.maps.LatLngBounds();
+      path.forEach((point) => bounds.extend(point));
+      map.fitBounds(bounds);
+    }
+  );
+}
 
   setInterval(updateMarkerPosition, 60000);
 }
