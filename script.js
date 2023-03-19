@@ -2,10 +2,11 @@ const sheetId = '1rl8YOQ8Ez6qsGIdkYbvZwRWqFcfGEbAa3KRKoZWaOKo';
 const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
 function initMap() {
-  const map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 5,
-    center: { lat: -27.464145, lng: 141.278832 },
-  });
+  google.maps.event.addDomListener(window, 'load', () => {
+    const map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 5,
+      center: { lat: -27.464145, lng: 141.278832 },
+    });
 
   const startMarker = new google.maps.Marker({
     position: { lat: -19.2535, lng: 146.81724 },
@@ -108,9 +109,8 @@ function watchForChanges() {
 }
 
 let lastUpdated = new Date();
-watchForChanges();
+    watchForChanges();
+  });
 }
 
-google.maps.event.addDomListener(window, 'load', initMap);
 initMap();
-
