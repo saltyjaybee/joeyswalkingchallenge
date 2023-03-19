@@ -60,7 +60,7 @@ function initMap() {
 
  function updateMarkerPosition() {
   $.getJSON(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:B?key=${apiKey}`,
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:C?key=${apiKey}`,
     (data) => {
       const totalKms = data.values
 		.map((row) => parseFloat(row[2])) // use column C for kms walked
