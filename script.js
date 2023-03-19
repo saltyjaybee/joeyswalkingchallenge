@@ -3,8 +3,8 @@ const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 5,
-    center: { lat: -27.464145, lng: 141.278832 },
+    zoom: 6,
+    center: { lat: -26.35118, lng: 144.11533 },
   });
 
   const startMarker = new google.maps.Marker({
