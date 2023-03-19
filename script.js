@@ -34,7 +34,7 @@ function initMap() {
   });
 
   const start = new google.maps.LatLng(-19.2535, 146.81724);
-  const end = new google.maps.LatLng(--37.37982, 140.83947);
+  const end = new google.maps.LatLng(-37.37982, 140.83947);
 
   directionsService.route(
     {
