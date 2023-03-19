@@ -1,4 +1,3 @@
-function initialize() {
 const sheetId = '1rl8YOQ8Ez6qsGIdkYbvZwRWqFcfGEbAa3KRKoZWaOKo';
 const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
@@ -46,6 +45,7 @@ function initMap() {
     (response, status) => {
       if (status === 'OK') {
         directionsRenderer.setDirections(response);
+        updateMarkerPosition(); // Moved this line here
       } else {
         console.error(`Directions request failed due to ${status}`);
       }
@@ -67,36 +67,21 @@ function initMap() {
         for (let i = 0; i < path.length - 1; i++) {
           const a = path[i];
           const b = path[i + 1];
-		  const distance = google.maps.geometry.spherical.computeDistanceBetween(a, b) / 1000;
-		        if (remainingKms >= distance) {
-        remainingKms -= distance;
-      } else {
-        const fraction = remainingKms / distance;
-        const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
-        joeysMarker.setPosition(interpolatedLatLng);
-        break;
+          const distance = google.maps.geometry.spherical.computeDistanceBetween(a, b) / 1000;
+          if (remainingKms >= distance) {
+            remainingKms -= distance;
+          } else {
+            const fraction = remainingKms / distance;
+            const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
+            joeysMarker.setPosition(interpolatedLatLng);
+            break;
+          }
+        }
       }
-    }
+    );
   }
-);
+
+  setInterval(updateMarkerPosition, 60000); // Update the position every minute
 }
 
-updateMarkerPosition();
-setInterval(updateMarkerPosition, 60000); // Update the position every minute
-}
-
-google.maps.event.addDomListener(window, 'DOMContentLoaded', initMap);
-}
-
-// Call the initialize function after the Google Maps API is loaded
-if (typeof google !== 'undefined') {
-  initialize();
-} else {
-  document.addEventListener('DOMContentLoaded', () => {
-    const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry&callback=initialize';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-  });
-}
+google.maps.event.addDomListener(window, 'load', initMap);
