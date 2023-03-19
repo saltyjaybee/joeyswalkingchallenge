@@ -63,8 +63,9 @@ function initMap() {
     `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Form%20Responses%201!A2:B?key=${apiKey}`,
     (data) => {
       const totalKms = data.values
-        .map((row) => parseFloat(row[1]))
-        .reduce((sum, kms) => sum + kms, 0);
+		.map((row) => parseFloat(row[2])) // use column C for kms walked
+		.reduce((sum, kms) => sum + kms, 0);
+
 
       const route = directionsRenderer.getDirections();
       const path = route.routes[0].overview_path;
