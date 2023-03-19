@@ -1,3 +1,4 @@
+function initialize() {
 const sheetId = '1rl8YOQ8Ez6qsGIdkYbvZwRWqFcfGEbAa3KRKoZWaOKo';
 const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
@@ -85,3 +86,17 @@ setInterval(updateMarkerPosition, 60000); // Update the position every minute
 }
 
 google.maps.event.addDomListener(window, 'DOMContentLoaded', initMap);
+}
+
+// Call the initialize function after the Google Maps API is loaded
+if (typeof google !== 'undefined') {
+  initialize();
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    const script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry&callback=initialize';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  });
+}
