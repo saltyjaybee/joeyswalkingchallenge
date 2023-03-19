@@ -3,8 +3,8 @@ const apiKey = 'AIzaSyD5SCv6wFw-XXdK13L369BPmnTA_59fxRg';
 
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 5,
-    center: { lat: -26.35118, lng: 144.11533 },
+    zoom: 6,
+    center: joeysMarker.getPosition(),
   });
 
   const startMarker = new google.maps.Marker({
@@ -80,6 +80,7 @@ function initMap() {
             const fraction = remainingKms / distance;
             const interpolatedLatLng = google.maps.geometry.spherical.interpolate(a, b, fraction);
             joeysMarker.setPosition(interpolatedLatLng);
+			map.setCenter(joeysMarker.getPosition());
             break;
           }
         }
