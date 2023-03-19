@@ -22,7 +22,7 @@ function initMap() {
     },
   });
 
-  const finishMarker = new google.maps.Marker({
+  const endMarker = new google.maps.Marker({
     position: { lat: -37.37982, lng: 140.83947 },
     map: map,
     title: 'Mary Mackillop Memorial School',
